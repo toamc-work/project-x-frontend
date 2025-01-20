@@ -1,0 +1,15 @@
+{
+  "files": [],
+  "compilerOptions": {
+    "types": ["vite-plugin-svgr/client"],
+    "strictNullChecks": true,
+    "strict": true,
+    "allowJs": true,
+    "baseUrl": "./"
+  },
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "include": ["vite-env.d.ts"]
+}
