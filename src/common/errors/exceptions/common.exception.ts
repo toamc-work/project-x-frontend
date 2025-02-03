@@ -1,0 +1,11 @@
+export class BadRequestException extends Error {}
+export class UnauthorizedException extends Error {}
+export class ForbiddenException extends Error {}
+export class NotFoundException extends Error {}
+export class ConflictException extends Error {}
+export class GoneException extends Error {}
+export class IsntVerifiedException extends Error {}
+export class TooManyRequestsException extends Error {}
+export class InternalServerException extends Error {}
+export class UnexpectedException extends Error {}
+export class UnhandledException extends Error {}
