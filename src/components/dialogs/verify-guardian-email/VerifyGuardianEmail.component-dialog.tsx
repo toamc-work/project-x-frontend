@@ -4,6 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import EmailVerificationStepper from "src/components/stepper/EmailVerificationStepper.component-stepper";
 import { ThreeBaseStep } from "src/components/stepper/steps.enum";
 import EmailVerification from "src/components/containers/email-verification/EmailVerification.component-container";
+import { VerifyGuardianEmailErrorContextProvider } from "./context/VerifyGuardianEmailErrorContextProvider";
 
 type VerifyGuardianEmailDialogProps = {
   render: (openDialog: () => void) => React.JSX.Element;
@@ -69,12 +70,14 @@ const VerifyGuardianEmailDialog: FC<VerifyGuardianEmailDialogProps> = ({
               borderRadius: 2,
             }}
           >
-            <EmailVerification
-              email={email}
-              activeStep={activeStep}
-              setActiveStep={setActiveStep}
-              closeDialog={handleClose}
-            />
+            <VerifyGuardianEmailErrorContextProvider>
+              <EmailVerification
+                email={email}
+                activeStep={activeStep}
+                setActiveStep={setActiveStep}
+                closeDialog={handleClose}
+              />
+            </VerifyGuardianEmailErrorContextProvider>
           </Box>
         </DialogContent>
       </Dialog>

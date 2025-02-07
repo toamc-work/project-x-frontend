@@ -1,4 +1,6 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
+import { InvalidOtpException } from "src/common/errors/exceptions/custom.exception";
+import { VerifyGuardianEmailErrorContext } from "src/components/dialogs/verify-guardian-email/context/VerifyGuardianEmailErrorContextProvider";
 import CompleteEmailVerification from "src/components/static/CompleteEmailVerification.component-static";
 import StartEmailVerification from "src/components/static/StartEmailVerification.component-static";
 import VerificationCodeInput from "src/components/widgets/inputs/VerificationCodeInput.component-widget";
@@ -18,9 +20,14 @@ const EmailVerification: FC<EmailVerificationProps> = ({
   setActiveStep,
   closeDialog,
 }): React.JSX.Element => {
+  const { errors, pubSub: errorPubSub$ } = useContext(
+    VerifyGuardianEmailErrorContext,
+  );
+
   const startEmailVerification = async () => {
     try {
       await authService.guardianVerifyMailSessionStartOtp();
+      errorPubSub$.publish("session-start");
       setActiveStep(1);
     } catch (error) {
       throw error;
@@ -30,25 +37,33 @@ const EmailVerification: FC<EmailVerificationProps> = ({
   const resendEmailVerificationCode = async () => {
     try {
       await authService.guardianVerifyMailSessionResendOtp();
+      errorPubSub$.publish("session-restart");
     } catch (error) {
-      throw error;
+      errorPubSub$.throw(error);
     }
   };
 
   const verifyVerificationCode = async (dto: VerifyOtpDto) => {
     try {
-      await authService.guardianVerifyMailSessionVerifyOtp(dto);
-      setActiveStep(2);
+      const response =
+        await authService.guardianVerifyMailSessionVerifyOtp(dto);
+      if (response.data.verification === "granted") {
+        errorPubSub$.publish("session-verified");
+        setActiveStep(2);
+      } else {
+        errorPubSub$.throw(new InvalidOtpException());
+      }
     } catch (error) {
-      throw error;
+      errorPubSub$.throw(error);
     }
   };
 
   const completeEmailVerification = async () => {
     try {
       await authService.guardianVerifyMailSessionComplete();
+      errorPubSub$.publish("session-completed");
     } catch (error) {
-      throw error;
+      errorPubSub$.throw(error);
     }
   };
 
@@ -63,7 +78,7 @@ const EmailVerification: FC<EmailVerificationProps> = ({
     case 1:
       return (
         <VerificationCodeInput
-          invalidOtp={false}
+          invalidOtp={errors.invalidOtp}
           resendVerificationCode={resendEmailVerificationCode}
           submitVerificationCode={verifyVerificationCode}
         />

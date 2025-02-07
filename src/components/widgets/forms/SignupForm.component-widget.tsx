@@ -1,4 +1,10 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormHelperText,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { FC, useState } from "react";
 import { Link } from "react-router-dom";
 import { Formik, Form, Field } from "formik";
@@ -10,10 +16,12 @@ import { GuardianSignupSessionStartOtpSmsDto } from "src/providers/api/auth/dto/
 
 interface SignupFormWidgetProps {
   submitForm: (dto: GuardianSignupSessionStartOtpSmsDto) => Promise<void>;
+  invalidInput: boolean;
 }
 
 const SignupFormWidget: FC<SignupFormWidgetProps> = ({
   submitForm,
+  invalidInput,
 }): React.JSX.Element => {
   const [defaultCountry, setDefaultCountry] = useState("");
 
@@ -124,7 +132,9 @@ const SignupFormWidget: FC<SignupFormWidgetProps> = ({
               error={touched.phone && Boolean(errors.phone)}
               helperText={touched.phone && errors.phone}
             />
-
+            <FormHelperText variant="filled" error={invalidInput}>
+              {invalidInput ? "Please Verify your credentials" : ""}
+            </FormHelperText>
             {/* Submit Button */}
             <Button
               type="submit"

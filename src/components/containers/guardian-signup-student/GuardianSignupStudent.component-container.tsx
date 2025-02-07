@@ -1,4 +1,6 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
+import { InvalidOtpException } from "src/common/errors/exceptions/custom.exception";
+import { GuardianSignupStudentErrorContext } from "src/components/dialogs/guardian-signup-student.component-dialog.tsx/context/GuardianSignupStudentErrorContextProvider.context";
 import CompleteGuardianSignupStudent from "src/components/static/CompleteGuardianSignupStudent.component-static";
 import GuardianSignupStudentForm from "src/components/widgets/forms/GuardianSignupStudentForm.component-widget";
 import VerificationCodeInput from "src/components/widgets/inputs/VerificationCodeInput.component-widget";
@@ -21,36 +23,49 @@ const GuardianSignupStudent: FC<GuardianSignupStudentProps> = ({
   phone,
   name,
 }): React.JSX.Element => {
+  const { errors, pubSub: errorPubSub$ } = useContext(
+    GuardianSignupStudentErrorContext,
+  );
+
   const startGuardianSignupStudent = async (
     dto: GuardianSignupStudentSessionStartOtpSmsDto,
   ) => {
     try {
       await authService.guardianSignupStudentSessionStartOtpSms(dto);
       setActiveStep(1);
+      errorPubSub$.publish("session-start");
     } catch (error) {
-      throw error;
+      errorPubSub$.throw(error);
     }
   };
   const resendGuardianSignupStudentCode = async () => {
     try {
       await authService.guardianSignupStudentSessionResendOtpSms();
+      errorPubSub$.publish("session-restart");
     } catch (error) {
-      throw error;
+      errorPubSub$.throw(error);
     }
   };
   const verifyGuardianSignupStudentCode = async (dto: VerifyOtpDto) => {
     try {
-      await authService.guardianSignupStudentSessionVerifyOtp(dto);
-      setActiveStep(2);
+      const response =
+        await authService.guardianSignupStudentSessionVerifyOtp(dto);
+      if (response.data.verification === "granted") {
+        setActiveStep(2);
+        errorPubSub$.publish("session-verified");
+      } else {
+        errorPubSub$.throw(new InvalidOtpException());
+      }
     } catch (error) {
-      throw error;
+      errorPubSub$.throw(error);
     }
   };
   const completeGuardianSignupStudent = async () => {
     try {
       await authService.guardianSignupStudentSessionComplete();
+      errorPubSub$.publish("session-completed");
     } catch (error) {
-      throw error;
+      errorPubSub$.throw(error);
     }
   };
 
@@ -66,7 +81,7 @@ const GuardianSignupStudent: FC<GuardianSignupStudentProps> = ({
     case 1:
       return (
         <VerificationCodeInput
-          invalidOtp={false}
+          invalidOtp={errors.invalidOtp}
           resendVerificationCode={resendGuardianSignupStudentCode}
           submitVerificationCode={verifyGuardianSignupStudentCode}
         />

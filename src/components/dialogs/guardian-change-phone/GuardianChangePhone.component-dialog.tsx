@@ -4,15 +4,14 @@ import React, { FC, useState } from "react";
 import { ThreeBaseStep } from "src/components/stepper/steps.enum";
 import GuardianChangePhoneStepper from "src/components/stepper/GuardianChangePhoneStepper.componet-stepper";
 import GuardianChangePhone from "src/components/containers/guardian-change-phone/GuardianChangePhone.component-container";
+import { GuardianChangePhoneErrorContextProvider } from "./context/GuardianChangePhoneErrorContextProvider.context";
 
 type GuardianChangePhoneDialogProps = {
   render: (openDialog: () => void) => React.JSX.Element;
-  isEmailVerified: boolean;
 };
 
 const GuardianChangePhoneDialog: FC<GuardianChangePhoneDialogProps> = ({
   render,
-  isEmailVerified,
 }): React.JSX.Element => {
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState<ThreeBaseStep>(
@@ -67,12 +66,14 @@ const GuardianChangePhoneDialog: FC<GuardianChangePhoneDialogProps> = ({
               borderRadius: 2,
             }}
           >
-            <GuardianChangePhone
-              isEmailVerified={isEmailVerified}
-              activeStep={activeStep}
-              setActiveStep={setActiveStep}
-              closeDialog={handleClose}
-            />
+            <GuardianChangePhoneErrorContextProvider>
+              <GuardianChangePhone
+                //isEmailVerified={isEmailVerified}
+                activeStep={activeStep}
+                setActiveStep={setActiveStep}
+                closeDialog={handleClose}
+              />
+            </GuardianChangePhoneErrorContextProvider>
           </Box>
         </DialogContent>
       </Dialog>

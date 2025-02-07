@@ -38,8 +38,8 @@ const GuardianSignupStudentForm: FC<GuardianSignupStudentFormProps> = ({
   const handleSubmit = async (values: typeof initialValues) => {
     const { phone, name } = values;
     await submitForm({
-      phone: phone,
       name: name,
+      phone: phone,
     });
   };
   return (
@@ -71,6 +71,7 @@ const GuardianSignupStudentForm: FC<GuardianSignupStudentFormProps> = ({
               id="name"
               name="name"
               label="Student Name"
+              value={values.name}
               variant="outlined"
               error={touched.name && Boolean(errors.name)}
               helperText={touched.name && errors.name}

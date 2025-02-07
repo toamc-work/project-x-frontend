@@ -7,7 +7,7 @@ import VerificationCodeInput from "src/components/widgets/inputs/VerificationCod
 import authService from "src/providers/api/auth/auth.service";
 import { GuardianSignupSessionStartOtpSmsDto } from "src/providers/api/auth/dto/guardian-signup-session-start-otp-sms.dto";
 import { VerifyOtpDto } from "src/providers/api/auth/dto/verify-otp.dto";
-import { GuardianSignupErrorContext } from "src/routes/auth/context/GuardianSignupErrorContextProvider.context";
+import { GuardianSignupErrorContext } from "src/components/pages/guest/signup/context/GuardianSignupErrorContextProvider.context";
 
 type SignupGuardianProps = unknown;
 
@@ -68,7 +68,12 @@ const SignupGuardian: FC<SignupGuardianProps> = (_props): React.JSX.Element => {
     <Routes>
       <Route
         index
-        element={<SignupFormWidget submitForm={handleFormSubmission} />}
+        element={
+          <SignupFormWidget
+            invalidInput={errors.phoneNumberExists}
+            submitForm={handleFormSubmission}
+          />
+        }
       />
       <Route
         path="verify"

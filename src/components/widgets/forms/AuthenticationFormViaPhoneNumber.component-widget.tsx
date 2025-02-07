@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, FormHelperText } from "@mui/material";
 import React, { FC, useState } from "react";
 import { Formik, Form } from "formik";
 import { LoginFormSchema } from "./factories/login-form.factory";
@@ -12,6 +12,7 @@ interface AuthenticationFormViaPhoneNumberWidgetProps {
   phoneNumberErrorMessage?: string | undefined;
   defaultPhone?: string;
   btnTxt?: string;
+  invalidInput: boolean;
 }
 
 const AuthenticationFormViaPhoneNumberWidget: FC<
@@ -21,6 +22,7 @@ const AuthenticationFormViaPhoneNumberWidget: FC<
   phoneNumberErrorMessage,
   defaultPhone = "",
   btnTxt = "submit",
+  invalidInput,
 }): React.JSX.Element => {
   const [defaultCountry, setDefaultCountry] = useState("");
 
@@ -80,7 +82,11 @@ const AuthenticationFormViaPhoneNumberWidget: FC<
                 (touched.phone && errors.phone) ?? phoneNumberErrorMessage
               }
             />
-
+            <FormHelperText variant="standard" error={invalidInput}>
+              {invalidInput
+                ? "phone number already exist please verify correct number was entered"
+                : ""}
+            </FormHelperText>
             <Button
               type="submit"
               fullWidth

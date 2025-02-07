@@ -20,7 +20,7 @@ import VerificationCodeInput from "src/components/widgets/inputs/VerificationCod
 import authService from "src/providers/api/auth/auth.service";
 import { AuthenticationStartSessionOtpViaSmsDto } from "src/providers/api/auth/dto/authentication-start-session-otp-via-sms.dto";
 import { VerifyOtpDto } from "src/providers/api/auth/dto/verify-otp.dto";
-import { AuthenticationViaPhoneNumberErrorContext } from "../../../routes/auth/context/AuthenticationViaPhoneNumberErrorContextProvider.context";
+import { AuthenticationViaPhoneNumberErrorContext } from "../../pages/guest/signin/context/AuthenticationViaPhoneNumberErrorContextProvider.context";
 import GuardianChangePhoneDialog from "src/components/dialogs/guardian-change-phone/GuardianChangePhone.component-dialog";
 
 type AuthenticationViaPhoneNumberProps = unknown;
@@ -214,7 +214,6 @@ const MultiRoleAuthenticationForm: FC<MultiRoleAuthenticationFormProps> = ({
         }
       />
       <GuardianChangePhoneDialog
-        isEmailVerified={true}
         render={(openDialog) => (
           <Button
             onClick={openDialog}

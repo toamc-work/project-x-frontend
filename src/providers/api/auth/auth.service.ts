@@ -350,7 +350,6 @@ class AuthService {
       const { guardianVerifyMailSessionResendOtp: endpoint } = paths;
       const { data }: AxiosResponse<ApiResponse> =
         await httpRequest.post(endpoint);
-
       return data;
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -373,10 +372,8 @@ class AuthService {
   async guardianVerifyMailSessionVerifyOtp(dto: VerifyOtpDto) {
     try {
       const { guardianVerifyMailSessionVerifyOtp: endpoint } = paths;
-      const { data }: AxiosResponse<ApiResponse> = await httpRequest.post(
-        endpoint,
-        dto,
-      );
+      const { data }: AxiosResponse<ApiResponse<VerifyOtpResponse>> =
+        await httpRequest.post(endpoint, dto);
 
       return data;
     } catch (error) {
@@ -578,10 +575,8 @@ class AuthService {
   async guardianClaimStudentSessionVerifyOtp(dto: VerifyOtpDto) {
     try {
       const { guardianClaimStudentSessionVerifyOtp: endpoint } = paths;
-      const { data }: AxiosResponse<ApiResponse> = await httpRequest.post(
-        endpoint,
-        dto,
-      );
+      const { data }: AxiosResponse<ApiResponse<VerifyOtpResponse>> =
+        await httpRequest.post(endpoint, dto);
 
       return data;
     } catch (error) {
@@ -680,10 +675,8 @@ class AuthService {
   async guardianChangePhoneSessionVerifyOtp(dto: VerifyOtpDto) {
     try {
       const { guardianChangePhoneSessionVerifyOtp: endpoint } = paths;
-      const { data }: AxiosResponse<ApiResponse> = await httpRequest.post(
-        endpoint,
-        dto,
-      );
+      const { data }: AxiosResponse<ApiResponse<VerifyOtpResponse>> =
+        await httpRequest.post(endpoint, dto);
 
       return data;
     } catch (error) {

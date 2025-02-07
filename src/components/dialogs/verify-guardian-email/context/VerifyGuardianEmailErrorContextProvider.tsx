@@ -1,9 +1,11 @@
 import React, { createContext, useState } from "react";
 import {
   BadRequestException,
+  UnauthorizedException,
   ForbiddenException,
   GoneException,
   InternalServerException,
+  TooManyRequestsException,
   UnhandledException,
 } from "src/common/errors/exceptions/common.exception";
 import { InvalidOtpException } from "src/common/errors/exceptions/custom.exception";
@@ -13,39 +15,42 @@ type IPubSubState =
   | "session-start"
   | "session-restart"
   | "session-verified"
-  | "session-completed"
-  | "session-refreshed";
+  | "session-completed";
 
-type GuardianSignupErrorContextProviderProps = {
+type VerifyGuardianEmailErrorContextProviderProps = {
   children: React.JSX.Element;
 };
 
 interface IState {
-  phoneNumberExists: boolean;
+  notSigned: boolean;
+  unAuthorized: boolean;
   invalidOtp: boolean;
   serverError: boolean;
   unhandledError: boolean;
   sessionExpired: boolean;
+  tooManyRequest: boolean;
 }
 
-type GuardianSignupErrorContextType = {
+type VerifyGuardianEmailErrorContextType = {
   errors: IState;
   pubSub: IPubSub<IPubSubState>;
 };
 
-export const GuardianSignupErrorContext = createContext(
-  {} as GuardianSignupErrorContextType,
+export const VerifyGuardianEmailErrorContext = createContext(
+  {} as VerifyGuardianEmailErrorContextType,
 );
 
-export const GuardianSignupErrorContextProvider = ({
+export const VerifyGuardianEmailErrorContextProvider = ({
   children,
-}: GuardianSignupErrorContextProviderProps) => {
+}: VerifyGuardianEmailErrorContextProviderProps) => {
   const [errors, setErrors] = useState<IState>({
-    phoneNumberExists: false,
+    notSigned: false,
+    unAuthorized: false,
     invalidOtp: false,
     serverError: false,
     unhandledError: false,
     sessionExpired: false,
+    tooManyRequest: false,
   });
 
   const pubSub = useSubjectObservable<IPubSubState>();
@@ -56,12 +61,13 @@ export const GuardianSignupErrorContextProvider = ({
       [key]: value,
     });
   };
+
   pubSub.subscribe({
     next(value) {
       if (value === "session-start") {
         setErrors({
           ...errors,
-          phoneNumberExists: false,
+          unAuthorized: false,
           serverError: false,
           unhandledError: false,
         });
@@ -83,8 +89,19 @@ export const GuardianSignupErrorContextProvider = ({
       }
     },
     error(err) {
+      let timeouts: NodeJS.Timeout[] = [];
       if (err instanceof BadRequestException) {
-        handler("phoneNumberExists", true);
+        handler("notSigned", true);
+        const timeout = setTimeout(() => {
+          handler("notSigned", false);
+        }, 2000);
+        timeouts.push(timeout);
+      } else if (err instanceof UnauthorizedException) {
+        handler("unAuthorized", true);
+        const timeout = setTimeout(() => {
+          handler("unAuthorized", false);
+        }, 2000);
+        timeouts.push(timeout);
       } else if (err instanceof InvalidOtpException) {
         handler("invalidOtp", true);
       } else if (
@@ -92,19 +109,36 @@ export const GuardianSignupErrorContextProvider = ({
         err instanceof ForbiddenException
       ) {
         handler("sessionExpired", true);
+      } else if (err instanceof TooManyRequestsException) {
+        handler("tooManyRequest", true);
+        const timeout = setTimeout(() => {
+          handler("tooManyRequest", false);
+        }, 30000);
+
+        timeouts.push(timeout);
       } else if (err instanceof InternalServerException) {
         handler("serverError", true);
       } else if (err instanceof UnhandledException) {
         handler("unhandledError", true);
       }
-      return () => {};
+
+      return () => {
+        if (timeouts.length) {
+          timeouts.forEach((timeout) => {
+            clearTimeout(timeout);
+          });
+
+          timeouts = [];
+        }
+      };
     },
     complete() {},
   });
-
   return (
-    <GuardianSignupErrorContext.Provider value={{ errors, pubSub: pubSub }}>
+    <VerifyGuardianEmailErrorContext.Provider
+      value={{ errors, pubSub: pubSub }}
+    >
       {children}
-    </GuardianSignupErrorContext.Provider>
+    </VerifyGuardianEmailErrorContext.Provider>
   );
 };

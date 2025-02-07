@@ -1,10 +1,12 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import authService from "src/providers/api/auth/auth.service";
 import VerificationCodeInput from "src/components/widgets/inputs/VerificationCodeInput.component-widget";
 import CompleteStudentClaim from "src/components/static/CompleteStudentClaim.component-static";
 import AuthenticationFormViaPhoneNumberWidget from "src/components/widgets/forms/AuthenticationFormViaPhoneNumber.component-widget";
 import { VerifyOtpDto } from "src/providers/api/auth/dto/verify-otp.dto";
 import { AuthenticationStartSessionOtpViaSmsDto } from "src/providers/api/auth/dto/authentication-start-session-otp-via-sms.dto";
+import { ClaimStudentErrorContext } from "src/components/dialogs/claim-student/context/ClaimStudentErrorContextProvider.context";
+import { InvalidOtpException } from "src/common/errors/exceptions/custom.exception";
 
 interface StudentClaimProps {
   activeStep: number;
@@ -14,44 +16,53 @@ interface StudentClaimProps {
 }
 
 const StudentClaim: FC<StudentClaimProps> = ({
-  //phone,
   activeStep,
   setActiveStep,
   closeDialog,
 }): React.JSX.Element => {
+  const { errors, pubSub: errorPubSub$ } = useContext(ClaimStudentErrorContext);
   const startStudentClaim = async (
     dto: AuthenticationStartSessionOtpViaSmsDto,
   ) => {
     try {
       await authService.guardianClaimStudentSessionStartOtpSms(dto);
       setActiveStep(1);
+      errorPubSub$.publish("session-start");
     } catch (error) {
-      throw error;
+      errorPubSub$.throw(error);
     }
   };
 
   const resendStudentClaimCode = async () => {
     try {
       await authService.guardianClaimStudentSessionResendOtpSms();
+      errorPubSub$.publish("session-restart");
     } catch (error) {
-      throw error;
+      errorPubSub$.throw(error);
     }
   };
 
   const verifyStudentClaimCode = async (dto: VerifyOtpDto) => {
     try {
-      await authService.guardianClaimStudentSessionVerifyOtp(dto);
-      setActiveStep(2);
+      const response =
+        await authService.guardianClaimStudentSessionVerifyOtp(dto);
+      if (response.data.verification === "granted") {
+        setActiveStep(2);
+        errorPubSub$.publish("session-verified");
+      } else {
+        errorPubSub$.throw(new InvalidOtpException());
+      }
     } catch (error) {
-      throw error;
+      errorPubSub$.throw(error);
     }
   };
 
   const completeStudentClaim = async () => {
     try {
       await authService.guardianClaimStudentSessionComplete();
+      errorPubSub$.publish("session-completed");
     } catch (error) {
-      throw error;
+      errorPubSub$.throw(error);
     }
   };
 
@@ -59,6 +70,7 @@ const StudentClaim: FC<StudentClaimProps> = ({
     case 0:
       return (
         <AuthenticationFormViaPhoneNumberWidget
+          invalidInput={errors.inputWrong}
           btnTxt="Send Verification Code"
           submitForm={startStudentClaim}
         />
@@ -66,7 +78,7 @@ const StudentClaim: FC<StudentClaimProps> = ({
     case 1:
       return (
         <VerificationCodeInput
-          invalidOtp={false}
+          invalidOtp={errors.invalidOtp}
           resendVerificationCode={resendStudentClaimCode}
           submitVerificationCode={verifyStudentClaimCode}
         />

@@ -12,11 +12,15 @@ interface GuardianChangPhoneFormProps {
     dto: GuardianChangePhoneSessionStartOtpViaMailDto,
   ) => Promise<void>;
   isEmailVerified: boolean;
+  phoneAlreadyExists: boolean;
+  invalidCredentials: boolean;
 }
 
 const GuardianChangPhoneForm: FC<GuardianChangPhoneFormProps> = ({
   submitForm,
   isEmailVerified,
+  phoneAlreadyExists,
+  invalidCredentials,
 }): React.JSX.Element => {
   const [defaultCountry, setDefaultCountry] = useState("");
 
@@ -89,8 +93,29 @@ const GuardianChangPhoneForm: FC<GuardianChangPhoneFormProps> = ({
               error={touched.phone && Boolean(errors.phone)}
               helperText={touched.phone && errors.phone}
             />
-            <FormHelperText>{"Enter your new phone number"}</FormHelperText>
-
+            {!invalidCredentials && (
+              <>
+                <FormHelperText error={phoneAlreadyExists}>
+                  {phoneAlreadyExists
+                    ? "The phone you entered already exist please contact support"
+                    : "Enter your new phone number"}
+                </FormHelperText>
+                <FormHelperText error={isEmailVerified}>
+                  {isEmailVerified
+                    ? ""
+                    : "Your Email isn't Verified please contact support"}
+                </FormHelperText>
+              </>
+            )}
+            {invalidCredentials && (
+              <>
+                <FormHelperText error={invalidCredentials}>
+                  {invalidCredentials
+                    ? "please check again your mail and new phone"
+                    : ""}
+                </FormHelperText>
+              </>
+            )}
             <Button
               type="submit"
               variant="contained"

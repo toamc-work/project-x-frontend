@@ -4,6 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import StudentClaim from "src/components/containers/student-claim/StudentClaim.component-container";
 import { ThreeBaseStep } from "src/components/stepper/steps.enum";
 import StudentClaimStepper from "src/components/stepper/StudentClaimStepper.component-stepper";
+import { ClaimStudentErrorContextProvider } from "./context/ClaimStudentErrorContextProvider.context";
 
 type ClaimStudentDialogProps = {
   render: (openDialog: () => void) => React.JSX.Element;
@@ -67,12 +68,14 @@ const ClaimStudentDialog: FC<ClaimStudentDialogProps> = ({
               borderRadius: 2,
             }}
           >
-            <StudentClaim
-              phone={phone}
-              activeStep={activeStep}
-              setActiveStep={setActiveStep}
-              closeDialog={handleClose}
-            />
+            <ClaimStudentErrorContextProvider>
+              <StudentClaim
+                phone={phone}
+                activeStep={activeStep}
+                setActiveStep={setActiveStep}
+                closeDialog={handleClose}
+              />
+            </ClaimStudentErrorContextProvider>
           </Box>
         </DialogContent>
       </Dialog>
