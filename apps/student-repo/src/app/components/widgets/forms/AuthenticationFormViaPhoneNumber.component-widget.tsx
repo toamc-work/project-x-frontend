@@ -6,7 +6,6 @@ import { MuiTelInput } from 'mui-tel-input';
 import { useOnMount } from '../../../hooks/useOnMount.hook';
 import geoService from '../../../providers/api/geo/geo.service';
 import { AuthenticationStartSessionOtpViaSmsDto } from '../../../providers/api/auth/dto/authentication-start-session-otp-via-sms.dto';
-
 interface AuthenticationFormViaPhoneNumberWidgetProps {
   submitForm: (dto: AuthenticationStartSessionOtpViaSmsDto) => Promise<void>;
   phoneNumberErrorMessage?: string | undefined;
@@ -59,7 +58,7 @@ const AuthenticationFormViaPhoneNumberWidget: FC<
         validationSchema={LoginFormSchema}
         onSubmit={handleSubmit}
       >
-        {({ values, errors, touched, setFieldValue, setFieldTouched }) => (
+        {({ values, errors, touched, setFieldValue }) => (
           <Form>
             <MuiTelInput
               fullWidth

@@ -1,0 +1,9 @@
+{
+  "name": "factories",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/factories/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project factories --web",
+  "targets": {}
+}

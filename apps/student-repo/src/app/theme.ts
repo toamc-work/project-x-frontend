@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createTheme } from '@mui/material/styles';
-import { DefaultTheme } from 'styled-components';
 
 export const muiTheme = createTheme({
   palette: {
@@ -69,5 +67,5 @@ export const muiTheme = createTheme({
 export type AppTheme = typeof muiTheme;
 
 declare module 'styled-components' {
-  export type DefaultTheme = AppTheme;
+  export type DefaultThem = AppTheme;
 }

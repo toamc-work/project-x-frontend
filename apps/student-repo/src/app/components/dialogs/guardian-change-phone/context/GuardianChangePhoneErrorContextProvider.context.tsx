@@ -5,7 +5,7 @@ import {
   ForbiddenException,
   GoneException,
   InternalServerException,
-  IsntVerifiedException,
+  IsNotVerifiedException,
   TooManyRequestsException,
   UnauthorizedException,
   UnhandledException,
@@ -118,7 +118,7 @@ export const GuardianChangePhoneErrorContextProvider = ({
           handler('invalidToken', false);
         }, 2000);
         timeouts.push(timeout);
-      } else if (err instanceof IsntVerifiedException) {
+      } else if (err instanceof IsNotVerifiedException) {
         handler('mailNotVerified', true);
         const timeout = setTimeout(() => {
           handler('mailNotVerified', false);

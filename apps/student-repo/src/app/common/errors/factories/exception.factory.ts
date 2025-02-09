@@ -7,7 +7,7 @@ import {
   GoneException,
   InternalServerException,
   NotFoundException,
-  IsntVerifiedException,
+  IsNotVerifiedException,
   TooManyRequestsException,
   UnauthorizedException,
   UnhandledException,
@@ -21,8 +21,7 @@ export class HttpException extends Error {
     this.status = status;
     this.message = message;
 
-    this.logger.error(this.message);
-
+    this.logger.error(this.message, this.stack);
     switch (this.status) {
       case ApiError.BAD_REQUEST:
         throw new BadRequestException(this.message);
@@ -36,8 +35,8 @@ export class HttpException extends Error {
         throw new ConflictException(this.message);
       case ApiError.GONE:
         throw new GoneException(this.message);
-      case ApiError.ISNT_VERIFIED:
-        throw new IsntVerifiedException(this.message);
+      case ApiError.IS_NOT_VERIFIED:
+        throw new IsNotVerifiedException(this.message);
       case ApiError.TOO_MANY_REQUESTS:
         throw new TooManyRequestsException(this.message);
       case ApiError.INTERNAL_SERVER:

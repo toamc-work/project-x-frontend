@@ -1,0 +1,23 @@
+{
+  "name": "landing-page-repo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "dependencies": {
+    "react-router-dom": "^7.1.5",
+    "mui-tel-input": "^7.0.0",
+    "@mui/icons-material": "^6.4.3",
+    "@mui/material": "^6.4.3",
+    "@mui/styled-engine-sc": "^6.4.3",
+    "formik": "^2.4.6",
+    "axios": "^1.7.9",
+    "yup": "^1.6.1",
+    "react-verification-input": "^4.2.0",
+    "immer": "^10.1.1",
+    "styled-components": "^6.1.15"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,34 @@
+{
+  "name": "guardian-repo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "generate-pwa-assets": "pwa-assets-generator --preset minimal public/vite.svg"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.4.3",
+    "@mui/material": "^6.4.3",
+    "@mui/styled-engine-sc": "^6.4.3",
+    "axios": "^1.7.9",
+    "formik": "^2.4.6",
+    "immer": "^10.1.1",
+    "mui-tel-input": "^7.0.0",
+    "react-router-dom": "^7.1.5",
+    "react-verification-input": "^4.2.0",
+    "rxjs": "^7.8.1",
+    "styled-components": "^6.1.15",
+    "vite-plugin-svgr": "^4.3.0",
+    "vite-tsconfig-paths": "^5.1.4",
+    "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "@vite-pwa/assets-generator": "^0.2.6",
+    "vite-plugin-pwa": "^0.21.1"
+  }
+}

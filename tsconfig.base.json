@@ -15,7 +15,15 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@student-app/*": ["./apps/student-repo/src/app/*"]
+      "@common": ["libs/common/src/index.ts"],
+      "@common/exceptions": ["libs/common/src/lib/exceptions.ts"],
+      "@common/http-status-code": ["libs/common/src/lib/error-codes.ts"],
+      "@factories": ["libs/factories/src/index.ts"],
+      "@shared-api": ["libs/shared-api/src/index.ts"],
+      "@shared-hooks": ["libs/hooks/src/index.ts"],
+      "@shared-ui": ["libs/shared-ui/src/index.ts"],
+      "@shared-ui/widgets": ["libs/shared-ui/src/lib/widgets/exports.ts"],
+      "@utils": ["libs/utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

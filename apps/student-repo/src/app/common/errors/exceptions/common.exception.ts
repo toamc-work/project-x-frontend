@@ -4,7 +4,7 @@ export class ForbiddenException extends Error {}
 export class NotFoundException extends Error {}
 export class ConflictException extends Error {}
 export class GoneException extends Error {}
-export class IsntVerifiedException extends Error {}
+export class IsNotVerifiedException extends Error {}
 export class TooManyRequestsException extends Error {}
 export class InternalServerException extends Error {}
 export class UnexpectedException extends Error {}
