@@ -1,5 +1,5 @@
 import {
-  Box,
+  Paper,
   Button,
   FormHelperText,
   TextField,
@@ -52,7 +52,7 @@ const SignupFormWidget: FC<SignupFormWidgetProps> = ({
     });
   };
   return (
-    <Box
+    <Paper
       sx={{
         maxWidth: 400,
         mx: 'auto',
@@ -149,7 +149,7 @@ const SignupFormWidget: FC<SignupFormWidgetProps> = ({
         )}
       </Formik>
       <Link to={'../signin'}>Already have an account? Sign In</Link>
-    </Box>
+    </Paper>
   );
 };
 

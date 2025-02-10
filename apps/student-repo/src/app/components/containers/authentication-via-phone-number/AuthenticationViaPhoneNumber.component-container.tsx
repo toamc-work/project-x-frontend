@@ -1,15 +1,18 @@
-import { Box, Typography } from '@mui/material';
+import { Paper, Typography } from '@mui/material';
 import React, { FC, useContext, useEffect } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
-import { InvalidOtpException } from '../../../common/errors/exceptions/custom.exception';
+import { InvalidOtpException } from '@common/exceptions';
+import { IVerificationCodeInput } from '@common/interfaces';
+import {
+  AuthenticationFormViaPhoneNumberWidget,
+  VerificationCodeInputWidget,
+} from '@shared-ui/widgets';
+
 import CompleteStudentSignin from '../../../components/static/CompleteStudentSignin.component-static';
-import { AuthenticationFormViaPhoneNumberWidget } from '@shared-ui/widgets';
-import VerificationCodeInput from '../../../components/widgets/inputs/VerificationCodeInput.component-widget';
 import authService from '../../../providers/api/auth/auth.service';
 import { AuthenticationStartSessionOtpViaSmsDto } from '../../../providers/api/auth/dto/authentication-start-session-otp-via-sms.dto';
-import { VerifyOtpDto } from '../../../providers/api/auth/dto/verify-otp.dto';
-import { AuthenticationViaPhoneNumberErrorContext } from '../../pages/guest/signin/context/AuthenticationViaPhoneNumberErrorContextProvider.context';
+import { AuthenticationViaPhoneNumberErrorContext } from '../../pages/signin/context/AuthenticationViaPhoneNumberErrorContextProvider.context';
 
 type AuthenticationViaPhoneNumberProps = unknown;
 
@@ -49,7 +52,7 @@ const AuthenticationViaPhoneNumber: FC<AuthenticationViaPhoneNumberProps> = (
     }
   };
 
-  const handleVerifyVerificationCode = async (dto: VerifyOtpDto) => {
+  const handleVerifyVerificationCode = async (dto: IVerificationCodeInput) => {
     try {
       const {
         data: { verification },
@@ -84,10 +87,15 @@ const AuthenticationViaPhoneNumber: FC<AuthenticationViaPhoneNumberProps> = (
       <Route
         path="verify"
         element={
-          <VerificationCodeInput
-            invalidOtp={errors.invalidOtp}
+          <VerificationCodeInputWidget
+            error={errors.invalidOtp}
             submitVerificationCode={handleVerifyVerificationCode}
             resendVerificationCode={handleResendVerificationCode}
+            message={
+              errors.invalidOtp
+                ? 'Invalid verification code'
+                : 'Please enter verification code'
+            }
           />
         }
       />
@@ -112,7 +120,7 @@ const AuthenticationForm: FC<AuthenticationFormProps> = ({
 }): React.JSX.Element => {
   const { errors } = useContext(AuthenticationViaPhoneNumberErrorContext);
   return (
-    <Box
+    <Paper
       sx={{
         maxWidth: 400,
         mx: 'auto',
@@ -140,7 +148,7 @@ const AuthenticationForm: FC<AuthenticationFormProps> = ({
             : undefined
         }
       />
-    </Box>
+    </Paper>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Box, FormHelperText } from '@mui/material';
+import { Paper, FormHelperText } from '@mui/material';
 import Button from '@mui/material/Button';
 import React, { FC } from 'react';
 import VerificationInput from 'react-verification-input';
@@ -11,7 +11,7 @@ export const VerificationCodeInputWidget: FC<Props> = ({
   message,
 }): React.JSX.Element => {
   return (
-    <Box
+    <Paper
       sx={{
         maxWidth: 400,
         width: 'fit-content',
@@ -57,6 +57,6 @@ export const VerificationCodeInputWidget: FC<Props> = ({
       >
         Resend Verification Code
       </Button>
-    </Box>
+    </Paper>
   );
 };

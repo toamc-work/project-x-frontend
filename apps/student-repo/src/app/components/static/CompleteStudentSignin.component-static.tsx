@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import React, { FC } from 'react';
-import { useOnMount } from '../../hooks/useOnMount.hook';
+import { useOnMount } from '@shared-hooks';
 
 interface CompleteStudentSigninProps {
   submitSigninComplete: () => Promise<void>;

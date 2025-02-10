@@ -1,12 +1,17 @@
 import React, { FC } from 'react';
-import { BrowserRouter, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import SigninPage from './components/pages/signin/Signin.component-page';
+import ProfilePage from './components/pages/profile/Profile.component-page';
 
 type AppProps = unknown;
 
 const App: FC<AppProps> = (_props): React.JSX.Element => {
   return (
     <BrowserRouter>
-      <Routes></Routes>
+      <Routes>
+        <Route path="/" element={<SigninPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+      </Routes>
     </BrowserRouter>
   );
 };

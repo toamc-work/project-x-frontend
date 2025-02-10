@@ -1,16 +1,12 @@
-import { Logger } from '@factories';
+import { Logger, HttpException } from '@factories';
 import { paths } from './definitions/constants';
-// import { GuardianSignupSessionStartOtpSmsDto } from './dto/guardian-signup-session-start-otp-sms.dto';
-// import { AuthenticationStartSessionOtpViaSmsDto } from './dto/authentication-start-session-otp-via-sms.dto';
-// import { GuardianSignupStudentSessionStartOtpSmsDto } from './dto/guardian-signup-student-start-session-otp-via-sms.dto';
-import { VerifyOtpDto } from './dto/verify-otp.dto';
+import {
+  IVerificationCodeInput,
+  IVerificationCodeResponse,
+} from '@common/interfaces';
 import httpRequest from '../http-request';
 import { AxiosError, AxiosResponse } from 'axios';
-import { HttpException } from '@factories';
 import { GuardianSignupSessionStartOtpSmsDto } from './dto/guardian-signup-session-start-otp-sms.dto';
-import { VerifyOtpResponse } from './response/verifyOtp.response';
-// import { VerifyOtpResponse } from './response/verifyOtp.response';
-// import { GuardianChangePhoneSessionStartOtpViaMailDto } from './dto/guardian-change-phone-session-start-otp-via-mail.dto';
 class AuthService {
   private readonly logger = new Logger(AuthService.name);
   /**
@@ -74,10 +70,10 @@ class AuthService {
    * @returns The ticket-storage cookie from the API response if the verification is granted.
    * @throws HttpException if the API call fails or returns an error.
    */
-  async guardianSignupSessionVerifyOtp(dto: VerifyOtpDto) {
+  async guardianSignupSessionVerifyOtp(dto: IVerificationCodeInput) {
     try {
       const { guardianSignupSessionVerifyOtp: endpoint } = paths;
-      const { data }: AxiosResponse<ApiResponse<VerifyOtpResponse>> =
+      const { data }: AxiosResponse<ApiResponse<IVerificationCodeResponse>> =
         await httpRequest.post(endpoint, dto);
 
       return data;

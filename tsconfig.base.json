@@ -1,9 +1,9 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "declaration": false,
     "rootDir": ".",
     "sourceMap": true,
-    "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -18,11 +18,15 @@
       "@common": ["libs/common/src/index.ts"],
       "@common/exceptions": ["libs/common/src/lib/exceptions.ts"],
       "@common/http-status-code": ["libs/common/src/lib/error-codes.ts"],
+      "@common/interfaces": ["libs/common/src/lib/interfaces.ts"],
       "@factories": ["libs/factories/src/index.ts"],
       "@shared-api": ["libs/shared-api/src/index.ts"],
       "@shared-hooks": ["libs/hooks/src/index.ts"],
       "@shared-ui": ["libs/shared-ui/src/index.ts"],
       "@shared-ui/widgets": ["libs/shared-ui/src/lib/widgets/exports.ts"],
+      "@shared-ui/styled-components": [
+        "libs/shared-ui/src/lib/styled-components/exports.ts"
+      ],
       "@utils": ["libs/utils/src/index.ts"]
     }
   },

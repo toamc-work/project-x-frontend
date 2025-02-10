@@ -7,57 +7,5 @@ export const paths = {
     'authentication/guardian/signup/session/verify/otp',
   guardianSignupSessionComplete:
     'authentication/guardian/signup/session/complete',
-  guardianSigninSessionStartOtpSms:
-    'authentication/guardian/signin/session/start/otp/sms',
-  guardianSigninSessionResendOtpSms:
-    'authentication/guardian/signin/session/resend/otp/sms',
-  guardianSigninSessionVerifyOtp:
-    'authentication/guardian/signin/session/verify/otp',
-  guardianSigninSessionComplete:
-    'authentication/guardian/signin/session/complete',
-  studentSigninSessionStartOtpSms:
-    'authentication/student/signin/session/start/otp/sms',
-  studentSigninSessionResendOtpSms:
-    'authentication/student/signin/session/resend/otp/sms',
-  studentSigninSessionVerifyOtp:
-    'authentication/student/signin/session/verify/otp',
-  studentSigninSessionComplete:
-    'authentication/student/signin/session/complete',
-  guardianVerifyMailSessionStartOtp:
-    'authentication/guardian/verify-mail/session/start/otp',
-  guardianVerifyMailSessionResendOtp:
-    'authentication/guardian/verify-mail/session/resend/otp',
-  guardianVerifyMailSessionVerifyOtp:
-    'authentication/guardian/verify-mail/session/verify/otp',
-  guardianVerifyMailSessionComplete:
-    'authentication/guardian/verify-mail/session/complete',
-  guardianSignupStudentSessionStartOtpSms:
-    'authentication/guardian/signup-student/session/start/otp/sms',
-  guardianSignupStudentSessionResendOtpSms:
-    'authentication/guardian/signup-student/session/resend/otp/sms',
-  guardianSignupStudentSessionVerifyOtp:
-    'authentication/guardian/signup-student/session/verify/otp',
-  guardianSignupStudentSessionComplete:
-    'authentication/guardian/signup-student/session/complete',
-  guardianClaimStudentSessionStartOtpSms:
-    'authentication/guardian/claim-student/session/start/otp/sms',
-  guardianClaimStudentSessionResendOtpSms:
-    'authentication/guardian/claim-student/session/resend/otp/sms',
-  guardianClaimStudentSessionVerifyOtp:
-    'authentication/guardian/claim-student/session/verify/otp',
-  guardianClaimStudentSessionComplete:
-    'authentication/guardian/claim-student/session/complete',
-  guardianChangePhoneSessionStartOtpMail:
-    'authentication/guardian/change-phone/session/start/otp/mail',
-  guardianChangePhoneSessionResendOtpMail:
-    'authentication/guardian/change-phone/session/resend/otp/mail',
-  guardianChangePhoneSessionVerifyOtp:
-    'authentication/guardian/change-phone/session/verify/otp',
-  guardianChangePhoneSessionCompleteStartOtpSms:
-    'authentication/guardian/change-phone/session/complete/start/otp/sms',
-  guardianChangePhoneSessionResendOtpSms:
-    'authentication/guardian/change-phone/session/resend/otp/sms',
-  guardianChangePhoneSessionComplete:
-    'authentication/guardian/change-phone/session/complete',
   refreshTokens: 'authentication/refresh-tokens',
 };

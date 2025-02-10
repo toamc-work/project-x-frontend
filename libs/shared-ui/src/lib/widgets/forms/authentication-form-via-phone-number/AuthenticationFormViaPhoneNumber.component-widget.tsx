@@ -1,4 +1,4 @@
-import { Box, Button, FormHelperText } from '@mui/material';
+import { Paper, Button, FormHelperText } from '@mui/material';
 import React, { FC } from 'react';
 import { Formik, Form } from 'formik';
 import { VALIDATION_SCHEMA } from './resources/validation';
@@ -15,7 +15,7 @@ export const AuthenticationFormViaPhoneNumberWidget: FC<Props> = ({
   error,
 }): React.JSX.Element => {
   return (
-    <Box
+    <Paper
       sx={{
         maxWidth: 400,
         mx: 'auto',
@@ -64,6 +64,6 @@ export const AuthenticationFormViaPhoneNumberWidget: FC<Props> = ({
           </Form>
         )}
       </Formik>
-    </Box>
+    </Paper>
   );
 };

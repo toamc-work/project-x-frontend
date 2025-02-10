@@ -7,7 +7,7 @@ import { VerificationCodeInputWidget } from '@shared-ui/widgets';
 import authService from '../../../providers/api/auth/auth.service';
 import { GuardianSignupSessionStartOtpSmsDto } from '../../../providers/api/auth/dto/guardian-signup-session-start-otp-sms.dto';
 import { SignupErrorContext } from '../../pages/signup/context/SignupErrorContextProvider.context';
-import { VerifyOtpDto } from '../../../providers/api/auth/dto/verify-otp.dto';
+import { IVerificationCodeInput } from '@common/interfaces';
 
 type SignupProps = unknown;
 
@@ -36,7 +36,7 @@ const Signup: FC<SignupProps> = (_props): React.JSX.Element => {
     }
   };
 
-  const handleVerifyVerificationCode = async (dto: VerifyOtpDto) => {
+  const handleVerifyVerificationCode = async (dto: IVerificationCodeInput) => {
     try {
       const {
         data: { verification },
