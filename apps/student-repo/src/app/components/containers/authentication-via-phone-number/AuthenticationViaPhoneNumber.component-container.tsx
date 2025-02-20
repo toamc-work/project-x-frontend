@@ -26,7 +26,7 @@ const AuthenticationViaPhoneNumber: FC<AuthenticationViaPhoneNumberProps> = (
 
   useEffect(() => {
     if (errors.sessionExpired) {
-      navigate('/auth/signin', { replace: true });
+      navigate('/', { replace: true });
       errorPubSub$.publish('session-refreshed');
     }
   }, [errorPubSub$, errors.sessionExpired, navigate]);
@@ -72,7 +72,7 @@ const AuthenticationViaPhoneNumber: FC<AuthenticationViaPhoneNumberProps> = (
     try {
       await authService.studentSigninSessionComplete();
       errorPubSub$.publish('session-completed');
-      navigate('/dashboard');
+      navigate('/questionnaire');
     } catch (error) {
       errorPubSub$.throw(error);
     }
