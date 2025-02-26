@@ -1,1 +1,1 @@
-export * as QuestionnaireReviewWidget from './__components__/exports'
+export * as QuestionnaireReviewWidget from './_components_/exports'

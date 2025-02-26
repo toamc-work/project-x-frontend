@@ -1,18 +1,33 @@
 import { createTheme } from '@mui/material/styles';
+import { blue } from '@mui/material/colors';
 
 export const muiTheme = createTheme({
+  components: {
+
+    MuiPaper: {
+      variants: [
+        {
+          props: { variant: 'circle' },
+          style: {
+            borderRadius: '50%',
+            boxShadow:'black 1px 1px 1px 1px'
+          }
+        }
+      ]
+    }
+  },
   palette: {
     primary: {
-      main: '#1976d2', // Blue
+      main: blue.A200, // Blue
       light: '#63a4ff',
       dark: '#004ba0',
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#f50057', // Pink
-      light: '#ff5983',
-      dark: '#bb002f',
-      contrastText: '#ffffff',
+      main: '#E0C2FF',
+      light: '#F5EBFF',
+      // dark: will be calculated from palette.secondary.main,
+      contrastText: '#47008F',
     },
     background: {
       default: '#f4f6f8',
@@ -29,7 +44,7 @@ export const muiTheme = createTheme({
     h2: { fontSize: '1.75rem', fontWeight: 700 },
     h3: { fontSize: '1.5rem', fontWeight: 600 },
     body1: { fontSize: '1rem', fontWeight: 400 },
-    body2: { fontSize: '0.875rem', fontWeight: 400 },
+    body2: { fontSize: '0.875em', fontWeight: 400 },
   },
   shape: {
     borderRadius: 8,
@@ -68,4 +83,10 @@ export type AppTheme = typeof muiTheme;
 
 declare module 'styled-components' {
   export type DefaultThem = AppTheme;
+}
+
+declare module '@mui/material/Paper' {
+  export interface PaperPropsVariantOverrides {
+    circle: true;
+  }
 }

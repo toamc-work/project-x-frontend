@@ -1,8 +1,8 @@
 import React, { FC, useState } from 'react';
 import { QuestionnaireWidget } from '../../widgets/questionnaire/Questionnaire.component-widget';
 import { useNavigate } from 'react-router-dom';
-import { useSocketEvent } from '../../../hooks/useSocket';
-import { socket } from '../../../../socket';
+//import { useSocketEvent } from '../../../hooks/useSocket';
+//import { socket } from '../../../../socket';
 import { useOnMount } from '@shared-hooks';
 import { IQuestionnaire, IQuestionData } from '../../../providers/api/questionnaire/response/questionnaire.response';
 
@@ -138,11 +138,12 @@ const Questionnaire: FC<QuestionnaireProps> = (_props): React.JSX.Element => {
   });
 
   return (
-    <QuestionnaireWidget.Main
-      questionID={question.questionId}
+    // <QuestionnaireWidget.Main
+    <>
+      {/* questionID={question.questionId}
       questionLevel={question.levelDifficulty}
       handleClose={handleDiscard}
-    >
+    > */}
       <QuestionnaireWidget.Timer
         timeOfEnd={1740048060000}
         questionID={question.questionId}
@@ -162,7 +163,8 @@ const Questionnaire: FC<QuestionnaireProps> = (_props): React.JSX.Element => {
           ),
         }}
       ></QuestionnaireWidget.PossibleAnswers>
-    </QuestionnaireWidget.Main>
+      </>
+    // {/* </QuestionnaireWidget.Main> */}
   );
 };
 

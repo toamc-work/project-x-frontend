@@ -17,10 +17,6 @@ export const QuestionnaireTimer: FC<QuestionnaireTimerProps> = ({
 
   
 
-  
-
-
-
   return (
     <Paper
       sx={{
@@ -37,21 +33,21 @@ export const QuestionnaireTimer: FC<QuestionnaireTimerProps> = ({
 
 const Timer = React.memo(() => {
   const date = new Date(utcToLocal(Date.now() +  30 * 60 * 1000) )
-  const { days, hours, minutes, seconds } = useTimer({ expiryTimestamp: date })
+  const { minutes, seconds } = useTimer({ expiryTimestamp: date })
 
   return (
     <Typography>
-    <TimerOutlinedIcon /> { `${days}  ${hours}  ${minutes}  ${seconds}` };
+    <TimerOutlinedIcon /> { `${minutes}:${seconds}` };
     </Typography>
   )
 })
 
 const StopWatch = React.memo(() => {
   const date = new Date(utcToLocal())
-  const {days, hours, minutes, seconds} = useStopwatch({autoStart: true, offsetTimestamp: date,})
+  const { minutes, seconds} = useStopwatch({autoStart: true, offsetTimestamp: date,})
   return (
     <Typography>
-    <TimerOutlinedIcon /> { `${days}  ${hours}  ${minutes}  ${seconds}` };
+    <TimerOutlinedIcon /> { `${minutes}:${seconds}` };
     </Typography>
   )
 })

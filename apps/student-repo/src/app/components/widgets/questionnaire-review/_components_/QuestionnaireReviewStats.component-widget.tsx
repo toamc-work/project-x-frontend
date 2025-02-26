@@ -23,7 +23,8 @@ export const QuestionnaireReviewStats: FC<QuestionnaireReviewStatsProps> = ({
     <Paper
       sx={{
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
+        flexDirection: 'row',
         width: '1400px',
         height: '40px',
         mx: 'auto',

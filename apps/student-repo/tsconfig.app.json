@@ -28,6 +28,7 @@
     "src/**/*.jsx",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "../../global.d.ts"
+    "../../global.d.ts",
+    "./theme.d.ts"
   ]
 }

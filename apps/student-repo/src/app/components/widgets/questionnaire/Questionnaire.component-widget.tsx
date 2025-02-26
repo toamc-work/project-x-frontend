@@ -1,16 +1,17 @@
 import { IconButton, Paper, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import React, { FC } from 'react';
+import React from 'react';
 
-type QuestionnaireContainerProps = {
+export * as QuestionnaireWidget from './__components__/exports'
+
+type QuestionnaireProps = {
+  children: React.ReactNode,
   questionID: string;
   questionLevel: string;
   handleClose: () => void;
 };
 
-export const QuestionnaireContainer: FC<
-  QuestionnaireContainerProps & React.PropsWithChildren
-> = ({ children, questionID, questionLevel, handleClose }) => {
+const Questionnaire = ({ children, questionID, questionLevel, handleClose }:QuestionnaireProps) => {
   return (
     <>
       <Paper
@@ -36,3 +37,5 @@ export const QuestionnaireContainer: FC<
     </>
   );
 };
+
+export default Questionnaire;
