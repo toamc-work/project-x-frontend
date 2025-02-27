@@ -10,7 +10,8 @@ export default defineConfig({
   cacheDir: '../../node_modules/.vite/apps/student-repo',
   server: {
     port: 5173,
-    host: true,
+    host: false,
+    hmr: true,
   },
   preview: {
     port: 4300,
