@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { QuestionnaireInfoProps } from './interfaces/QuestionnaireInfo.interface';
 import { QuestionnaireProps } from './interfaces/Questionnaire.interface';
 import { KidsThemeProvider } from './styles/theme/theme';
@@ -26,6 +26,7 @@ import { SkipBtnProps } from './interfaces/SkipButton.interface';
 import { SkipBtnUI } from './styles/ui/SkipBtn.ui';
 import { HintBtnProps } from './interfaces/HintButton.interface';
 import { HintBtnUI } from './styles/ui/HintButton.ui';
+
 interface QuestionnaireCompoundProps extends React.FC<QuestionnaireProps> {
   Info: React.FC<QuestionnaireInfoProps>;
   Title: React.FC<QuestionTitleProps>;
@@ -60,12 +61,16 @@ Questionnaire.DiscardBtn = ({ performDiscardAction }) => {
 };
 
 Questionnaire.PossibleAnswers = ({ render }) => {
+  
   return (
     <PossibleAnswersUI>
       {render.data.map((possibleAnswerContent, index) => {
         return render.mapper(
-          ({ onClick }) => (
-            <PossibleAnswerUI onClick={() => onClick(possibleAnswerContent)}>
+          ({ onClick, isHinted }) => (
+            <PossibleAnswerUI
+              $variant={isHinted ? 'disabled' : 'enabled'}
+              onClick={async () => onClick(possibleAnswerContent)}
+            >
               {possibleAnswerContent}
             </PossibleAnswerUI>
           ),
@@ -88,13 +93,11 @@ Questionnaire.SkipBtn = ({ performSkipAction }) => {
   return <SkipBtnUI onClick={performSkipAction}>Skip</SkipBtnUI>;
 };
 
-Questionnaire.HintBtn = React.memo(({ enabled, hint, questionId }) => {
+Questionnaire.HintBtn = React.memo(({ enabled, hint, handleHint }) => {
   if (enabled && hint !== null) {
     return (
       <HintBtnUI
-        onClick={() => {
-          console.log('should create a modal or a tooltip that show the hint');
-        }}
+        onClick={() => handleHint()}
         $variant="enabled"
       >
         Hint
@@ -107,9 +110,12 @@ Questionnaire.HintBtn = React.memo(({ enabled, hint, questionId }) => {
   }
 });
 
-Questionnaire.Timer = ({ expiryTimestamp }) => {
+Questionnaire.Timer = ({ expiryTimestamp, onExpire }) => {
   const date = new Date(utcToLocal(expiryTimestamp));
-  const { minutes, seconds } = useTimer({ expiryTimestamp: date });
+  const { minutes, seconds } = useTimer({
+    onExpire,
+    expiryTimestamp: date,
+  });
   return (
     <TimerUI>
       <TimerOutlinedIcon
@@ -123,12 +129,14 @@ Questionnaire.Timer = ({ expiryTimestamp }) => {
   );
 };
 
-Questionnaire.StopWatch = () => {
-  const date = new Date(utcToLocal());
-  const { minutes, seconds } = useStopwatch({
+Questionnaire.StopWatch = ({offsetTimestamp}) => {
+  const { minutes, seconds , reset } = useStopwatch({
     autoStart: true,
-    offsetTimestamp: date,
+    offsetTimestamp,
   });
+  useEffect(() => {
+    reset(offsetTimestamp);
+  }, [offsetTimestamp, reset]);
   return (
     <StopWatchUI>
       <TimerOutlinedIcon

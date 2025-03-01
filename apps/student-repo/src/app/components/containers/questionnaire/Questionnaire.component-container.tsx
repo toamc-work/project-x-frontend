@@ -1,171 +1,121 @@
-import React, { FC, useState } from 'react';
-import { QuestionnaireWidget } from '../../widgets/questionnaire/Questionnaire.component-widget';
-import { useNavigate } from 'react-router-dom';
-//import { useSocketEvent } from '../../../hooks/useSocket';
-//import { socket } from '../../../../socket';
-import { useOnMount } from '@shared-hooks';
-import { IQuestionnaire, IQuestionData } from '../../../providers/api/questionnaire/response/questionnaire.response';
+'use client';
+import React, { FC, use, useEffect, useState } from 'react';
+import { Questionnaire } from '../../widgets/questionnaire/Questionnaire.component-composite';
+import QuestionnaireService from '../../../providers/api/questionnaire/questionnaire.service';
+import {
+  IQuestionActive,
+  IQuestionInactive,
+  IQuestionnaireStart,
+} from '../../../providers/api/questionnaire/response/questionnaire.response';
+import { utcToLocal } from '../../../providers/utils/utcToLocal';
 
-type QuestionnaireProps = unknown;
-
-const initialValues: IQuestionData = {
-  questionId: '0',
-  levelDifficulty: 'Intermediate',
-  possibleAnswers: ['lol', 'asd', 'Gbrish', 'Gbrush'],
-  text: 'question pull didn\'t succeeded',
-  subTopic: 'ForHonor'
-}
-
-// startQuestionnaireSession (RestAPI)
-// getNextQuestionnaireQuestion (RestAPI)
-// getLastQuestionnaireResults (RestAPI)
-
-
-// questionnaireIsAboutToClosePrompt (Socket)
-// questionnaireIsClosedPrompt (Socket)
-
-const Questionnaire: FC<QuestionnaireProps> = (_props): React.JSX.Element => {
-  const navigate = useNavigate();
-  const [question, setQuestion] = useState<typeof initialValues>(initialValues);
-
-  /**api workflow
-   * start questionnaire initiate sequence
-   * provide first question params
-   * send chosen answer and fetch for the next question
-   * final question initiate end sequence move to finished page display data: statistics and panel of questions answered
-   *  green for correct red for incorrect and a review dialog at each question to display a review
-   *
-   */
-  // const questionnaireMock = {
-  //   questionnaireId: 1,
-  //   duration: 180000,
-  //   totalQuestions: 3,
-  //   sessionId: '4eac2c9f-5a2a-4f6d-a57b-9df7d6e8b8c1', // Example UUID
-  //   data: {
-  //     questionId: '1',
-  //     levelDifficulty: 'Beginner',
-  //     text: 'What is the capital of France?',
-  //     possibleAnswers: ['London', 'Paris', 'Berlin', 'Madrid'],
-  //     subTopic: 'Capitals',
-  //   },
-  // };
-
-  // const nextQuestion = {
-  //   sessionId: '4eac2c9f-5a2a-4f6d-a57b-9df7d6e8b8c1',
-  //   data: {
-  //     questionId: '2',
-  //     levelDifficulty: 'Intermediate',
-  //     text: 'What is 3 times 5?',
-  //     possibleAnswers: ['10', '12', '15', '20'],
-  //     subTopic: 'Multiplication',
-  //   },
-  // };
-
-  // const lastQuestion = {
-  //   sessionId: '4eac2c9f-5a2a-4f6d-a57b-9df7d6e8b8c1',
-  //   data: {
-  //     questionId: '3',
-  //     levelDifficulty: 'Hard',
-  //     text: 'What is answer to life',
-  //     possibleAnswers: ['113', '7', '82', '42'],
-  //     subTopic: 'Magic',
-  //   },
-  // };
-
-  const possibleAnswers = [
-    {
-      questionID: '1',
-    },
-    {
-      questionID: '2',
-    },
-    {
-      questionID: '3',
-    },
-    {
-      questionID: '4',
-    },
-  ];
-  const handleDiscard = () => {
-    /**api discard
-     * socket close questionnaire session
-     */
-  //  useSocketEvent("discard-session", )
-  };
-  // const handleFinish = () => {
-  //   useSocketEvent("questionnaire-is-closed", () => {
-  //     navigate('/questionnaire/results')
-  //   })
-  // };
-
-  const startQuestionnaire = () => {
-    //api start question returns data of questionnaire session id and params
-    const data: IQuestionnaire = {
-      questionnaireId: 1,
-      totalQuestions: 3,
-      sessionId: '4eac2c9f-5a2a-4f6d-a57b-9df7d6e8b8c1', // Example UUID
-    };
-    return data;
-  };
-
-  const getFirstQuestion = () => {
-    //api request to receive question details
-    const data: IQuestionData = {
-      questionId: '1',
-      levelDifficulty: 'Beginner',
-      text: 'What is the capital of France?',
-      possibleAnswers: ['London', 'Paris', 'Berlin', 'Madrid'],
-      subTopic: 'Capitals'
-    };
-    return data;
-  }
-
-  const nextQuestion = () => {
-    //api request to receive question details
-    const data: IQuestionData = {
-      questionId: '2',
-      levelDifficulty: 'Intermediate',
-      text: 'What is 3 times 5?',
-      possibleAnswers: ['10', '12', '15', '20'],
-      subTopic: 'Multiplication',
-    };
-    return data;
-  }
-
-  useOnMount(() => {
-    const questionnaireData = startQuestionnaire();
-    setQuestion(getFirstQuestion());
-  });
-
-  return (
-    // <QuestionnaireWidget.Main
-    <>
-      {/* questionID={question.questionId}
-      questionLevel={question.levelDifficulty}
-      handleClose={handleDiscard}
-    > */}
-      <QuestionnaireWidget.Timer
-        timeOfEnd={1740048060000}
-        questionID={question.questionId}
-      ></QuestionnaireWidget.Timer>
-      <QuestionnaireWidget.Question questionText={question.text}></QuestionnaireWidget.Question>
-      <QuestionnaireWidget.PossibleAnswers
-        render={{
-          data: question.possibleAnswers,
-          mapper: (PossibleAnswer) => (
-            <PossibleAnswer
-              onClick={(answerID) => {
-                console.log(answerID);
-                //should submit question and receive the next question to display
-                setQuestion(nextQuestion());
-              }}
-            />
-          ),
-        }}
-      ></QuestionnaireWidget.PossibleAnswers>
-      </>
-    // {/* </QuestionnaireWidget.Main> */}
-  );
+type LevelQuestionnaireProps = {
+  questionnairePromise: Promise<ApiResponse<IQuestionnaireStart>>;
 };
 
-export default Questionnaire;
+const initialValues: IQuestionActive = {
+  questionId: '1',
+  active: true,
+  questionNumber: 1,
+  questionLevel: 'Intermediate',
+  questionTitle: 'What is 16 + 21 equals?',
+  questionPossibleAnswers: ['32', '37', '46', '29'],
+  questionHint: [2, 3],
+  topic: 'Counting',
+  subTopic: 'addition',
+};
+
+const LevelQuestionnaire: FC<LevelQuestionnaireProps> = ({
+  questionnairePromise,
+}): React.JSX.Element => {
+  const [question, setQuestion] = useState<IQuestionActive | IQuestionInactive>(
+    initialValues
+  );
+  const [hintUsed, setHintUsed] = useState<boolean>(false);
+  const [offsetTimestamp, setOffsetTimestamp] = useState<Date>(new Date(utcToLocal()));
+  const questionnaireResponse = use(questionnairePromise);
+
+  const handleSubmit = async (answer: string | null, type: string) => {
+    console.log('handle submit with args:', answer, type);
+    //api submit question with answer and type
+    const nextQuestion = await QuestionnaireService.getQuestion();
+    setQuestion(nextQuestion.data);
+    setOffsetTimestamp(new Date(utcToLocal()));
+    setHintUsed(false);
+  };
+
+  const handleExpired = () => {
+    handleSubmit(null, 'expired');
+    console.log('handle expired');
+  };
+
+  const handleHint = () => {
+    console.log('handle hint with index:', question.questionHint);
+    setHintUsed(true);
+  };
+
+  return (
+    <Questionnaire>
+      <Questionnaire.Info>
+        Level Questionnaire / {question.topic} - {question.subTopic}
+      </Questionnaire.Info>
+      <Questionnaire.Title
+        title={question.questionTitle ? question.questionTitle : 'bad'}
+      />
+      <Questionnaire.Timer
+        expiryTimestamp={
+          questionnaireResponse.data.expiryTimestamp
+            ? questionnaireResponse.data.expiryTimestamp
+            : 1740834602000
+        }
+        onExpire={handleExpired}
+      />
+      <Questionnaire.StopWatch
+        offsetTimestamp={offsetTimestamp}
+      />
+      <Questionnaire.SkipBtn
+        performSkipAction={() => handleSubmit(null, 'skip')}
+      />
+      <Questionnaire.QuestionNumber
+        questionNumber={`number ${question.questionNumber}/ ${questionnaireResponse.data.totalQuestions}`}
+      />
+      <Questionnaire.QuestionDifficulty
+        level={question.questionLevel ? question.questionLevel : 'bad'}
+      />
+      <Questionnaire.DiscardBtn
+        performDiscardAction={() => console.log('preform discard action')}
+      />
+      <Questionnaire.HintBtn
+        enabled={true}
+        hint={question.questionHint}
+        handleHint={handleHint}
+      />
+      <Questionnaire.PossibleAnswers
+        render={{
+          data: question.questionPossibleAnswers
+            ? question.questionPossibleAnswers
+            : ['something', 'went', 'wrong', 'here'],
+          mapper: (PossibleAnswer, index) => {
+            return (
+              <PossibleAnswer
+                key={index}
+                isHinted={
+                  hintUsed &&
+                  question.questionHint &&
+                  question.questionHint.includes(index)
+                    ? true
+                    : false
+                }
+                onClick={async (answer) =>
+                  await handleSubmit(answer, hintUsed ? 'hint' : 'regular')
+                }
+              />
+            );
+          },
+        }}
+      />
+    </Questionnaire>
+  );
+};
+//{console.log('possible answer args:', key, isHinted)}
+export default LevelQuestionnaire;

@@ -1,1 +1,1 @@
-export type StopWatchProps = unknown;
+export type StopWatchProps = { offsetTimestamp: Date };

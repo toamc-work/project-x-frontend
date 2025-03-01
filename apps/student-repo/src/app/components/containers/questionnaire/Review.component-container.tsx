@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { QuestionnaireReviewWidget } from '../../widgets/questionnaire-review/QuestionnaireReview.component-widget';
+import { QuestionnaireReviewWidget } from '../../widgets/questionnaire-review-old/QuestionnaireReview.component-widget';
 
 type ReviewProps = unknown;
 

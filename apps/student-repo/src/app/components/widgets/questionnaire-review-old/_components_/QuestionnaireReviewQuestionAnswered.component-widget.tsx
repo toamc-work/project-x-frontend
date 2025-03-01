@@ -18,7 +18,7 @@ export const QuestionnaireReviewAnsweredQuestions: FC<QuestionnaireReviewAnswere
           display: 'flex',
           flexDirection: 'row',
           color: question.answeredRight ? 'green' : 'red',
-          justifyContent: 'space-between',
+          justifyContent: 'space-evenly',
           width: '40px',
           height: '40px',
           mx: 'auto',
@@ -33,8 +33,6 @@ export const QuestionnaireReviewAnsweredQuestions: FC<QuestionnaireReviewAnswere
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'center',
-      width: '40px',
-      height: '40px',
       mx: 'auto',
     }}>
     {questions}

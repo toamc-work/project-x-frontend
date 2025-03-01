@@ -1,6 +1,8 @@
 import { Button, styled } from '@mui/material';
 
-export const PossibleAnswerUI = styled(Button)(({ theme }) => ({
+export const PossibleAnswerUI = styled(Button, {
+  shouldForwardProp: (prop) => prop !== '$variant', // Prevents `$variant` from being passed to the DOM
+})<{ $variant: 'enabled' | 'disabled' }>(({ theme, $variant }) => ({
   gridArea: 'question-title',
   ...theme.typography['h2'],
   borderRadius: '1rem',
@@ -13,6 +15,6 @@ export const PossibleAnswerUI = styled(Button)(({ theme }) => ({
   maxHeight: '90px',
   minHeight: '30px',
   height: '100%',
-  backgroundColor: theme.palette.primary.main,
+  backgroundColor: $variant === 'enabled' ? theme.palette.primary.main : theme.palette.grey[300],
   color: theme.palette.primary.contrastText,
 }));

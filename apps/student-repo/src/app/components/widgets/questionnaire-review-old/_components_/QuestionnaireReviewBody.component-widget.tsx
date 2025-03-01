@@ -12,7 +12,7 @@ export const QuestionnaireReviewBody: FC<
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        pt: 'auto',
+        marginTop: '40px',
         width: '1400px',
         height: '40px',
         mx: 'auto',
@@ -22,10 +22,7 @@ export const QuestionnaireReviewBody: FC<
       <Paper
         sx={{
           display: 'flex',
-          flexDirection: 'column',
-          pt: 'auto',
-          width: '1400px',
-          height: '40px',
+          flexDirection: 'column',          
           mx: 'auto',
         }}
       >
