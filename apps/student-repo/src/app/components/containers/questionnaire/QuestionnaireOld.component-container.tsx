@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 //import { useSocketEvent } from '../../../hooks/useSocket';
 //import { socket } from '../../../../socket';
 import { useOnMount } from '@shared-hooks';
-import { IQuestionnaire, IQuestionData } from '../../../providers/api/questionnaire/response/questionnaire.response';
+import { IQuestionnaire, IQuestionData } from '../../../providers/api/questionnaire-mock/response/questionnaire.response';
 
 type QuestionnaireProps = unknown;
 

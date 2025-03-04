@@ -1,121 +1,141 @@
 'use client';
-import React, { FC, use, useEffect, useState } from 'react';
+import React, { FC, use, useState, ReactNode } from 'react';
 import { Questionnaire } from '../../widgets/questionnaire/Questionnaire.component-composite';
 import QuestionnaireService from '../../../providers/api/questionnaire/questionnaire.service';
 import {
-  IQuestionActive,
-  IQuestionInactive,
-  IQuestionnaireStart,
+  IQuestionnaire,
+  IQuestion,
 } from '../../../providers/api/questionnaire/response/questionnaire.response';
 import { utcToLocal } from '../../../providers/utils/utcToLocal';
 
+enum AnswerType {
+  Answered = 'answered',
+  Skipped = 'skipped',
+  Hinted = 'hint',
+}
 type LevelQuestionnaireProps = {
-  questionnairePromise: Promise<ApiResponse<IQuestionnaireStart>>;
+  sessionPromise: Promise<ApiResponse<IQuestionnaire>>;
+  // questionPromise: Promise<ApiResponse<IQuestion>>;
 };
 
-const initialValues: IQuestionActive = {
-  questionId: '1',
-  active: true,
-  questionNumber: 1,
-  questionLevel: 'Intermediate',
-  questionTitle: 'What is 16 + 21 equals?',
-  questionPossibleAnswers: ['32', '37', '46', '29'],
-  questionHint: [2, 3],
-  topic: 'Counting',
-  subTopic: 'addition',
-};
+// const initialValues: IQuestion = {
+//   text: "wow",
+//   hint: [0, 1],
+//   levelName: 'Beginner',
+//   possibleAnswers: ["no", "Ish", "Sherlock", "Holmes"],
+//   startTime: 0,
+//   subtopicName: "Not",
+//   topicName: 'Good'
+// };
 
 const LevelQuestionnaire: FC<LevelQuestionnaireProps> = ({
-  questionnairePromise,
+  sessionPromise,
+  // questionPromise,
 }): React.JSX.Element => {
-  const [question, setQuestion] = useState<IQuestionActive | IQuestionInactive>(
-    initialValues
-  );
+  const { data: session } = use(sessionPromise);
+  let questionPromise = QuestionnaireService.questionnaireGetCurrentQuestion({
+    sessionId: session.sessionId,
+  });
   const [hintUsed, setHintUsed] = useState<boolean>(false);
-  const [offsetTimestamp, setOffsetTimestamp] = useState<Date>(new Date(utcToLocal()));
-  const questionnaireResponse = use(questionnairePromise);
+  // const questionnaire = questionnaireResponse.data;
 
-  const handleSubmit = async (answer: string | null, type: string) => {
-    console.log('handle submit with args:', answer, type);
+  const handleSubmit = async (answer: string, type: AnswerType) => {
     //api submit question with answer and type
-    const nextQuestion = await QuestionnaireService.getQuestion();
-    setQuestion(nextQuestion.data);
-    setOffsetTimestamp(new Date(utcToLocal()));
+    await QuestionnaireService.questionnaireSendPossibleAnswer({
+      sessionId: session.sessionId,
+      answer,
+      event: type,
+    });
+    questionPromise = QuestionnaireService.questionnaireGetCurrentQuestion({
+      sessionId: session.sessionId,
+    });
+
     setHintUsed(false);
   };
 
   const handleExpired = () => {
-    handleSubmit(null, 'expired');
-    console.log('handle expired');
+    // continue to review
   };
 
   const handleHint = () => {
-    console.log('handle hint with index:', question.questionHint);
+    // console.log('handle hint with index:', question.hint);
     setHintUsed(true);
   };
 
   return (
     <Questionnaire>
-      <Questionnaire.Info>
-        Level Questionnaire / {question.topic} - {question.subTopic}
-      </Questionnaire.Info>
-      <Questionnaire.Title
-        title={question.questionTitle ? question.questionTitle : 'bad'}
-      />
-      <Questionnaire.Timer
-        expiryTimestamp={
-          questionnaireResponse.data.expiryTimestamp
-            ? questionnaireResponse.data.expiryTimestamp
-            : 1740834602000
-        }
-        onExpire={handleExpired}
-      />
-      <Questionnaire.StopWatch
-        offsetTimestamp={offsetTimestamp}
-      />
-      <Questionnaire.SkipBtn
-        performSkipAction={() => handleSubmit(null, 'skip')}
-      />
-      <Questionnaire.QuestionNumber
-        questionNumber={`number ${question.questionNumber}/ ${questionnaireResponse.data.totalQuestions}`}
-      />
-      <Questionnaire.QuestionDifficulty
-        level={question.questionLevel ? question.questionLevel : 'bad'}
-      />
-      <Questionnaire.DiscardBtn
-        performDiscardAction={() => console.log('preform discard action')}
-      />
-      <Questionnaire.HintBtn
-        enabled={true}
-        hint={question.questionHint}
-        handleHint={handleHint}
-      />
-      <Questionnaire.PossibleAnswers
-        render={{
-          data: question.questionPossibleAnswers
-            ? question.questionPossibleAnswers
-            : ['something', 'went', 'wrong', 'here'],
-          mapper: (PossibleAnswer, index) => {
-            return (
-              <PossibleAnswer
-                key={index}
-                isHinted={
-                  hintUsed &&
-                  question.questionHint &&
-                  question.questionHint.includes(index)
-                    ? true
-                    : false
-                }
-                onClick={async (answer) =>
-                  await handleSubmit(answer, hintUsed ? 'hint' : 'regular')
-                }
-              />
-            );
-          },
-        }}
-      />
+      <QuestionWrapper questionPromise={questionPromise}>
+        {(question) => (
+          <>
+            <Questionnaire.Info>
+              Level Questionnaire / {question.topicName} -{' '}
+              {question.subtopicName}
+            </Questionnaire.Info>
+            <Questionnaire.Title title={question.text} />
+            <Questionnaire.Timer
+              expiryTimestamp={
+                session.expiryTimestamp
+                  ? session.expiryTimestamp
+                  : 1740834602000
+              }
+              onExpire={handleExpired}
+            />
+            <Questionnaire.StopWatch
+              offsetTimestamp={new Date(utcToLocal(question.startTime))}
+            />
+            <Questionnaire.SkipBtn
+              performSkipAction={() => handleSubmit('', AnswerType.Skipped)}
+            />
+            <Questionnaire.QuestionNumber
+              questionNumber={`number ${1} / ${session.totalQuestions}`}
+            />
+            <Questionnaire.QuestionDifficulty level={question.levelName} />
+            <Questionnaire.DiscardBtn
+              performDiscardAction={() => console.log('preform discard action')}
+            />
+            <Questionnaire.HintBtn
+              enabled={true}
+              hint={question.hint}
+              handleHint={handleHint}
+            />
+            <Questionnaire.PossibleAnswers
+              render={{
+                data: question.possibleAnswers,
+                mapper: (PossibleAnswer, index) => {
+                  return (
+                    <PossibleAnswer
+                      key={index}
+                      isHinted={
+                        hintUsed &&
+                        question.hint &&
+                        question.hint.includes(index)
+                          ? true
+                          : false
+                      }
+                      onClick={async (answer) =>
+                        await handleSubmit(
+                          answer,
+                          hintUsed ? AnswerType.Hinted : AnswerType.Answered
+                        )
+                      }
+                    />
+                  );
+                },
+              }}
+            />
+          </>
+        )}
+      </QuestionWrapper>
     </Questionnaire>
   );
+};
+
+const QuestionWrapper: FC<{
+  children: (question: IQuestion) => ReactNode;
+  questionPromise: Promise<ApiResponse<IQuestion>>;
+}> = ({ questionPromise, children }) => {
+  const { data: question } = use(questionPromise);
+  return children(question);
 };
 //{console.log('possible answer args:', key, isHinted)}
 export default LevelQuestionnaire;

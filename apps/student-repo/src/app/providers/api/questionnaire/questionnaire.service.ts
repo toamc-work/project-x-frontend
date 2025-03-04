@@ -1,106 +1,92 @@
-import { AxiosError } from 'axios';
+import { Logger, HttpException } from "@factories"
+import { paths } from "./definitions/constants"
+import { QuestionnaireSessionDto } from "./dto/questionnaire-session.dto"
+import httpRequest from '../http-request';
+import { AxiosError, AxiosResponse } from 'axios';
+import { PostQuestionnaireSessionAnswerDto } from "./dto/post-questionnaire-session-answer.dto";
+import { IQuestion, IQuestionnaire } from "./response/questionnaire.response";
 
-import { HttpException, Logger } from '@factories';
-import { fakeRequest } from '@utils';
-import { MethodNotModifiedException } from '@common/exceptions';
-
-import { QUESTION_DATA, INACTIVE_QUESTION, QUESTIONNAIRE } from './mock/questionnaire.mock';
-import { IQuestion, IQuestionActive, IQuestionInactive, IQuestionnaireStart } from './response/questionnaire.response';
-
-export class QuestionnaireService {
+class QuestionnaireService {
   private readonly logger = new Logger(QuestionnaireService.name);
 
-  async getQuestionnaire(): Promise<ApiResponse<IQuestionnaireStart>>{
+  async startQuestionnaireSession() {
     try {
-      if (import.meta.env.DEV) {
-        const data = await fakeRequest(QUESTIONNAIRE);
-        const response: ApiResponse<IQuestionnaireStart> = {
-          message: 'success',
-          data: {
-            sessionId: data.sessionId,
-            questionnaireId: data.questionnaireId,
-            totalQuestions: data.totalQuestions,
-            expiryTimestamp: data.expiryTimestamp
-          }
-        };
-        return response;
-      } else {
-        throw new MethodNotModifiedException();
-      }
-    } catch (err) {
-      if (err instanceof AxiosError) {
-        throw new HttpException(err.status as number, err.message);
+      const { startSession: endpoint } = paths;
+      const { data }: AxiosResponse<ApiResponse<IQuestionnaire>> = await httpRequest.post(
+        endpoint,
+      );
+
+      return data;
+    } catch (error) {
+      //validate correct error handling
+      if (error instanceof AxiosError) {
+        throw new HttpException(error.status as number, error.message);
       }
 
-      this.logger.error((err as Error).message);
-      throw err;
+      this.logger.error((error as Error).message);
+      throw error;
     }
   }
 
-  async getQuestion(): Promise<ApiResponse<IQuestion>> {
+  async questionnaireGetCurrentQuestion(dto: QuestionnaireSessionDto) {
     try {
-      if (import.meta.env.DEV) {
-        const data = await fakeRequest<IQuestionActive>(QUESTION_DATA);
-        const response: ApiResponse<IQuestion> = {
-          message: 'success',
-          data: {
-            questionId: data.questionId,
-            active: true,
-            questionNumber: data.questionNumber,
-            questionLevel: data.questionLevel,
-            questionTitle: data.questionTitle,
-            questionPossibleAnswers: data.questionPossibleAnswers,
-            questionHint: data.questionHint,
-            topic: data.topic,
-            subTopic: data.subTopic
-          }
-        };
-        return response;
-      } else {
-        throw new MethodNotModifiedException();
+      const { getCurrentQuestion: endpoint } = paths;
+      const { data }: AxiosResponse<ApiResponse<IQuestion>> = await httpRequest.patch(
+        endpoint,
+        dto
+      );
+
+      return data;
+    } catch (error) {
+      //validate correct error handling
+      if (error instanceof AxiosError) {
+        throw new HttpException(error.status as number, error.message);
       }
-    } catch(err) {
-      if (err instanceof AxiosError) {
-        throw new HttpException(err.status as number, err.message);
-      }
-  
-      this.logger.error((err as Error).message);
-      throw err;
+
+      this.logger.error((error as Error).message);
+      throw error;
     }
-  } 
-  async getQuestionBad(): Promise<ApiResponse<IQuestion>> {
+  }
+
+  async questionnaireSendPossibleAnswer(dto: PostQuestionnaireSessionAnswerDto) {
     try {
-      if (import.meta.env.DEV) {
-        const data = await fakeRequest<IQuestionInactive>(INACTIVE_QUESTION);
-        const response: ApiResponse<IQuestion> = {
-          message: 'success',
-          data: {
-            questionId: data.questionId,
-            active: false,
-            questionNumber: data.questionNumber,
-            questionLevel: data.questionLevel,
-            questionTitle: data.questionTitle,
-            questionPossibleAnswers: data.questionPossibleAnswers,
-            questionHint: data.questionHint,
-            topic: data.topic,
-            subTopic: data.subTopic
-          }
-        };
-        return response;
-      } else {
-        throw new MethodNotModifiedException();
+      const { possibleAnswer: endpoint } = paths;
+      const { data }: AxiosResponse<ApiResponse> = await httpRequest.patch(
+        endpoint,
+        dto
+      );
+
+      return data;
+    } catch (error) {
+      //validate correct error handling
+      if (error instanceof AxiosError) {
+        throw new HttpException(error.status as number, error.message);
       }
-    } catch(err) {
-      if (err instanceof AxiosError) {
-        throw new HttpException(err.status as number, err.message);
-      }
-  
-      this.logger.error((err as Error).message);
-      throw err;
+
+      this.logger.error((error as Error).message);
+      throw error;
     }
-  } 
-  //To add A send answer and receive next question
-  //End of quiz
+  }
+
+  async questionnaireAliveCheck() {
+      try {
+        const { aliveCheck: endpoint } = paths;
+        const { data }: AxiosResponse<ApiResponse> = await httpRequest.get(
+          endpoint
+        );
+
+        return data;
+      } catch (error) {
+        //validate correct error handling
+        if (error instanceof AxiosError) {
+          throw new HttpException(error.status as number, error.message);
+        }
+
+        this.logger.error((error as Error).message);
+        throw error;
+      }
+    
+  }
 }
 
 export default new QuestionnaireService();

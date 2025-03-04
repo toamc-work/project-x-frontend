@@ -10,10 +10,10 @@ type QuestionnairePageProps = unknown;
 const QuestionnairePage: FC<QuestionnairePageProps> = (
   _props
 ): React.JSX.Element => {
-  const requestQuestionnaire = QuestionnaireService.getQuestionnaire()
+  const requestQuestionnaire = QuestionnaireService.startQuestionnaireSession()
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <LevelQuestionnaire questionnairePromise={requestQuestionnaire} />
+      <LevelQuestionnaire sessionPromise={requestQuestionnaire} />
     </Suspense>
   );
 };
