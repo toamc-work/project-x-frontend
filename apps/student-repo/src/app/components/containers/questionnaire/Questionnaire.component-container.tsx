@@ -1,22 +1,22 @@
-'use client';
-import React, { FC, use, useState, ReactNode } from 'react';
+"use client";
+import React, { use, ReactNode } from 'react';
 import { Questionnaire } from '../../widgets/questionnaire/Questionnaire.component-composite';
-import QuestionnaireService from '../../../providers/api/questionnaire/questionnaire.service';
+// import QuestionnaireService from '../../../providers/api/questionnaire/questionnaire.service';
 import {
   IQuestionnaire,
   IQuestion,
 } from '../../../providers/api/questionnaire/response/questionnaire.response';
-import { utcToLocal } from '../../../providers/utils/utcToLocal';
+// import { utcToLocal } from '../../../providers/utils/utcToLocal';
 
-enum AnswerType {
-  Answered = 'answered',
-  Skipped = 'skipped',
-  Hinted = 'hint',
-}
-type LevelQuestionnaireProps = {
-  sessionPromise: Promise<ApiResponse<IQuestionnaire>>;
-  // questionPromise: Promise<ApiResponse<IQuestion>>;
-};
+// enum AnswerType {
+//   Answered = 'answered',
+//   Skipped = 'skipped',
+//   Hinted = 'hint',
+// }
+// type LevelQuestionnaireProps = {
+//   sessionPromise: Promise<ApiResponse<IQuestionnaire>>;
+//   // questionPromise: Promise<ApiResponse<IQuestion>>;
+// };
 
 // const initialValues: IQuestion = {
 //   text: "wow",
@@ -28,43 +28,43 @@ type LevelQuestionnaireProps = {
 //   topicName: 'Good'
 // };
 
-const LevelQuestionnaire: FC<LevelQuestionnaireProps> = ({
+const LevelQuestionnaire = ({
   sessionPromise,
   // questionPromise,
-}): React.JSX.Element => {
+}: {sessionPromise: Promise<ApiResponse<IQuestionnaire>>}): React.JSX.Element => {
   const { data: session } = use(sessionPromise);
-  let questionPromise = QuestionnaireService.questionnaireGetCurrentQuestion({
-    sessionId: session.sessionId,
-  });
-  const [hintUsed, setHintUsed] = useState<boolean>(false);
-  // const questionnaire = questionnaireResponse.data;
+  // let questionPromise = QuestionnaireService.questionnaireGetCurrentQuestion({
+  //   sessionId: session.sessionId,
+  // });
+  // const [hintUsed, setHintUsed] = useState<boolean>(false);
+  // // const questionnaire = questionnaireResponse.data;
 
-  const handleSubmit = async (answer: string, type: AnswerType) => {
-    //api submit question with answer and type
-    await QuestionnaireService.questionnaireSendPossibleAnswer({
-      sessionId: session.sessionId,
-      answer,
-      event: type,
-    });
-    questionPromise = QuestionnaireService.questionnaireGetCurrentQuestion({
-      sessionId: session.sessionId,
-    });
+  // const handleSubmit = async (answer: string, type: AnswerType) => {
+  //   //api submit question with answer and type
+  //   await QuestionnaireService.questionnaireSendPossibleAnswer({
+  //     sessionId: session.sessionId,
+  //     answer,
+  //     event: type,
+  //   });
+  //   questionPromise = QuestionnaireService.questionnaireGetCurrentQuestion({
+  //     sessionId: session.sessionId,
+  //   });
 
-    setHintUsed(false);
-  };
+  //   setHintUsed(false);
+  // };
 
-  const handleExpired = () => {
-    // continue to review
-  };
+  // const handleExpired = () => {
+  //   // continue to review
+  // };
 
-  const handleHint = () => {
-    // console.log('handle hint with index:', question.hint);
-    setHintUsed(true);
-  };
+  // const handleHint = () => {
+  //   // console.log('handle hint with index:', question.hint);
+  //   setHintUsed(true);
+  // };
 
   return (
-    <Questionnaire>
-      <QuestionWrapper questionPromise={questionPromise}>
+    <div>
+      {/* <QuestionWrapper questionPromise={questionPromise}>
         {(question) => (
           <>
             <Questionnaire.Info>
@@ -125,17 +125,17 @@ const LevelQuestionnaire: FC<LevelQuestionnaireProps> = ({
             />
           </>
         )}
-      </QuestionWrapper>
-    </Questionnaire>
+      </QuestionWrapper> */}
+    </div>
   );
 };
 
-const QuestionWrapper: FC<{
-  children: (question: IQuestion) => ReactNode;
-  questionPromise: Promise<ApiResponse<IQuestion>>;
-}> = ({ questionPromise, children }) => {
-  const { data: question } = use(questionPromise);
-  return children(question);
-};
-//{console.log('possible answer args:', key, isHinted)}
+// const QuestionWrapper: FC<{
+//   children: (question: IQuestion) => ReactNode;
+//   questionPromise: Promise<ApiResponse<IQuestion>>;
+// }> = ({ questionPromise, children }) => {
+//   const { data: question } = use(questionPromise);
+//   return children(question);
+// };
+// //{console.log('possible answer args:', key, isHinted)}
 export default LevelQuestionnaire;

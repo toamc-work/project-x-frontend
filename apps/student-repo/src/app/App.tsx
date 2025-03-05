@@ -13,7 +13,7 @@ const App: FC<AppProps> = (_props): React.JSX.Element => {
       <BrowserRouter>
         <Routes>
           <Route path="/*" element={<SigninPage />} />
-          <Route path="/questionnaire" element={<QuestionnairePage />} />
+          <Route path="/questionnaire/:sessionId" element={<QuestionnairePage />} />
           {/* development */}
           <Route path="/finish" element={<QuestionnaireFinishedPage />} />
         </Routes>

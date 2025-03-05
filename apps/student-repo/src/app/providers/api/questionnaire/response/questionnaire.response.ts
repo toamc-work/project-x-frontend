@@ -13,3 +13,14 @@ export interface IQuestion {
   readonly startTime: number;
   readonly hint: [number, number];
 }
+
+export interface ISessionStatus{
+  readonly status: StatusOption;
+}
+
+export enum StatusOption{
+  Ongoing = 'ongoing',
+  Review = 'review',
+  Completed = 'completed'
+
+}
